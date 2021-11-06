@@ -24,7 +24,7 @@ void insert_update(skip_list_t *list, unsigned short key, short value) {
     }
     
     node_t *next = current->next[0];
-    
+   
     // UPDATE value
     if (next != NULL && next->key == key) {
         current->next[0]->value = value;
