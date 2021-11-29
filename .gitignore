@@ -3,7 +3,7 @@ HW*/
 result/
 *.jar
 *.jpg
-
+*.swp
 # Prerequisites
 *.d
 

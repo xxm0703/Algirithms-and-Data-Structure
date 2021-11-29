@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <math.h>
 
 typedef struct node_t {
 	int value;
@@ -148,6 +149,16 @@ void printTree(node_t *root)
     print2DUtil(root, 0);
 }
 
+int isBalanced(node_t *root) {
+	if (root == NULL)
+		return 1;
+
+	size_t elementCnt = sizeTree(root);
+	int ifIsBalanced = (int)log2(elementCnt) + 1;
+
+	return ifIsBalanced == height(root);
+}
+
 
 int main() {
 	node_t *root = add(NULL, 15); 
@@ -178,9 +189,10 @@ int main() {
 	printf("\n");
 
 	printf("Height: %hhu\n", height(root));
-	
+	printf("Is balanced: %d\n", isBalanced(root1));
 	root1 = balanceTree(root1);
 
+	printf("Is balanced: %d\n", isBalanced(root1));
 	fetchValues(root1, arr);
 
 	for (int i = 0; i < 6; ++i) {
