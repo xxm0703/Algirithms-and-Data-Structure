@@ -13,6 +13,11 @@ stack_t *init(size_t initCap) {
 	return stack;
 }
 
+void destroy_stack(stack_t *s) {
+	free(s->arr);
+	free(s);
+}
+
 void push_back(stack_t *stack, double value) {
 	if (stack->size == stack->capacity) {
 		stack->arr = realloc(stack->arr, stack->capacity *= 2);

@@ -9,6 +9,7 @@ typedef struct stack {
 } stack_t;
 
 stack_t *init(size_t initCap);
+void destroy_stack(stack_t *s);
 void push_back(stack_t *stack, double value);
 void pop(stack_t *stack);
 double back(stack_t *stack);
