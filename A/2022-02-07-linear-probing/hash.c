@@ -59,6 +59,10 @@ hash_table *hash_add(hash_table *table, char * const key, int value) {
     new_pair->value = value;
     
     size_t index = hash(key) % table->capacity;
+    while (table->pairs[index] != NULL) {
+        index = (index + 1) % table->capacity;
+    }
+    
     table->pairs[index] = new_pair;
     ++table->size;
     return table;
