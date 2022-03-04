@@ -9,10 +9,9 @@ struct graph_node_t {
 };
 
 typedef struct queue{
-    int arr[1000];
+    struct graph_node_t *arr[1000];
     int push;
     int pop;
-    int size;
 }que;
 
 struct graph_node_t* init_graph_node(int value);
@@ -28,9 +27,9 @@ void print_node(struct graph_node_t* node) {
     for(int i = 0; i < node->item_count; i++) {
         printf("%d,",node->items[i]->value);
     }
-    puts("");
 }
 
+int bfs(struct graph_node_t *start, struct graph_node_t *end);
 struct graph_node_t* find_node(struct graph_node_t* start, int value);
 
 int main() {
@@ -50,7 +49,7 @@ int main() {
     connect_nodes(first->items[1], first->items[0]->items[0]);
 
     print_node(first->items[0]->items[0]);
-
+    printf("\n%d ", bfs(first->items[0]->items[0], first));
     return 0;
 }
 
@@ -128,36 +127,28 @@ int bfs(struct graph_node_t *start, struct graph_node_t *end)
     if(!start || !end)
         return 0;
       
-    que *queue;
-    queue = (que *)malloc(sizeof(que));
-    queue->push = 0;
-    queue->pop = 0;
-    queue->size = 0;
-    
-    queue->arr[queue->push++] = start->value;
-    queue->size++;
+    que queue;
+    queue.push = 0;
+    queue.pop = 0;
+
+    queue.arr[queue.push++] = start;
     start->visited = 1;
     
-    struct graph_node_t *temp = start;
     
-    while(queue->size > 0)
-    {
-        if(end->value == queue->arr[queue->pop])
+    while(queue.push - queue.pop > 0) {
+    	struct graph_node_t *temp = queue.arr[queue.pop];
+        
+	if(end == queue.arr[queue.pop])
             return 1;
             
-        temp = find_node(start, queue->arr[queue->pop]);
-        temp->visited = 1;
         for(int i = 0; i < temp->item_count; i++)
         {
-            if(temp->items[i]->visited == 1)
-                continue;
-                
-            queue->arr[queue->push++] = temp->items[i]->value;
-            queue->size++;
-            temp->items[i]->visited = 1;
+            if(temp->items[i]->visited == 0) {
+                queue.arr[queue.push++] = temp->items[i];
+            	temp->items[i]->visited = 1;
+	    }
         }
-        queue->pop++;
-        queue->size--;
+        queue.pop++;
     }
     
     return 0;
