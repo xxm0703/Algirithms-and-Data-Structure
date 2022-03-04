@@ -68,12 +68,55 @@ hash_table *hash_add(hash_table *table, char * const key, int value) {
     return table;
 }
 
-// bool *hash_contains(hash_table *table, char *key);
+int hash_contains(hash_table *table, char *key) {
+    if(table == NULL || table->size == 0){
+        return 0;
+    }
 
+    size_t index = hash(key) % table->capacity;
 
-int main() {
-    hash_table ht;
-//    ht.contains("10A");
-    destroy_table(&ht);
+    for(int i = 0;table->pairs[index] != NULL && i < table->capacity; i++){
+        if(!strcmp(table->pairs[index]->key, key)){
+            return 1;
+        }
+        index = (index + 1) % table->capacity;
+    }
+
     return 0;
 }
+
+void print_hash(hash_table *table) {
+    if (table == NULL)
+        return;
+
+    for (size_t i = 0; i < table->capacity; i++) {
+        if (table->pairs[i] == NULL) {
+            printf("_ ");
+        } else {
+            pair_t *curr_pair = table->pairs[i];
+            printf("%s: %d ", curr_pair->key, curr_pair->value);
+        }
+    }
+}
+
+int main() {
+    hash_table *ht = hash_init(2);
+    ht = hash_add(ht, "10A", 26);
+    // ht = hash_add(ht, "9B", 24);
+    ht = hash_add(ht, "10V", 23);
+    print_hash(ht);
+    destroy_table(ht);
+    return 0;
+}
+#define T int*****
+#include"vector.h"
+
+#define T char
+#include"vector.h"
+
+
+/*
+struct vector {
+    T value;
+}
+*/
