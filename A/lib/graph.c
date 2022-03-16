@@ -1,22 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
-
-struct graph_node_t {
-    int value;
-    struct graph_node_t** items;
-    int item_count;
-    char visited;
-};
-
-typedef struct queue{
-    struct graph_node_t *arr[1000];
-    int push;
-    int pop;
-}que;
+#include "graph.h"
+#include "queue.h"
 
 struct graph_node_t* init_graph_node(int value);
 
-void connect_nodes(struct graph_node_t* a, struct graph_node_t* b);
 
 void add_node(struct graph_node_t* start, int new_value, int parent_value);
 
@@ -32,26 +20,6 @@ void print_node(struct graph_node_t* node) {
 int bfs(struct graph_node_t *start, struct graph_node_t *end);
 struct graph_node_t* find_node(struct graph_node_t* start, int value);
 
-int main() {
-    struct graph_node_t* first = init_graph_node(5);
-
-    add_node(first, 10, 5);
-    add_node(first, 12, 5);
-    add_node(first, 14, 5);
-
-    add_node(first, 20, 10);
-    add_node(first, 30, 20);
-
-    //connect_nodes(first->items[0]->items[0], first);
-
-    add_node(first->items[0]->items[0], 40, 5);
-
-    connect_nodes(first->items[1], first->items[0]->items[0]);
-
-    print_node(first->items[0]->items[0]);
-    printf("\n%d ", bfs(first->items[0]->items[0], first));
-    return 0;
-}
 
 struct graph_node_t* init_graph_node(int value)
 {
@@ -63,12 +31,39 @@ struct graph_node_t* init_graph_node(int value)
     return new_node;
 }
 
-void connect_nodes(struct graph_node_t* a, struct graph_node_t* b)
-{
+unsigned short dijkstra(struct graph_node_t *s, struct graph_node_t *e) {
+    size_t size = greatestVal(s) + 1;
+    unsigned int pathsLen[size];
+    list_t *l = init();
+
+    for (size_t i = 0; i < size; i++) {
+        pathsLen[i] = -1;
+    }
+    push(l, s, 0);   
+
+    while (l->size) {
+        struct graph_node_t *node = peek(l);
+        ppop(l);
+
+        for (size_t i = 0; i < node->item_count; i++) {
+            unsigned int path = pathsLen[node->value] + node->weights[i];
+            if (path < pathsLen[node->items[i]->value]); {
+                pathsLen[node->items[i]->value] = path;
+                push(l, node->items[i], path);
+            }
+        }
+
+    }
+    
+    return pathsLen[e->value];
+}
+
+void connect_nodes(struct graph_node_t* a, struct graph_node_t* b, unsigned short weight) {
     if (a == NULL || b == NULL)
         return;
         
     a->items = (struct graph_node_t**)realloc(a->items, (1 + a->item_count) * sizeof(struct graph_node_t*));
+    a->weights[a->item_count] = weight;
     a->items[a->item_count++] = b;
 }
 
@@ -100,7 +95,7 @@ void add_node(struct graph_node_t* start, int new_value, int parent_value)
 {
     struct graph_node_t *temp = find_node(start, parent_value);
     struct graph_node_t *new_node = init_graph_node(new_value);
-    connect_nodes(temp, new_node);
+    connect_nodes(temp, new_node, 1);
 }
 
 int hasPath(struct graph_node_t *start, struct graph_node_t *end){
@@ -120,6 +115,21 @@ int hasPath(struct graph_node_t *start, struct graph_node_t *end){
     }
     start->visited = 0;
     return 0;
+}
+
+int greatestVal(struct graph_node_t *start) {
+    start->visited = 1;
+    int temp = start->value;
+
+    for(int i = 0; i < start->item_count; i++) {      
+        if(!start->items[i]->visited) {
+            int val = greatestVal(start->items[i]);
+            if (val > temp)
+                temp = val;
+        }
+    }
+    start->visited = 0;
+    return temp;
 }
 
 int bfs(struct graph_node_t *start, struct graph_node_t *end)
