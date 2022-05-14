@@ -19,6 +19,12 @@ struct graph_node_t* init_graph_node(int value);
 unsigned short dijkstra(struct graph_node_t *s, struct graph_node_t *e);
 
 void connect_nodes(struct graph_node_t*, struct graph_node_t*, unsigned short);
+struct graph_node_t* init_graph_node(int value);
+
+struct graph_node_t *read_from_file(const char *filename){
+
+int bfs(struct graph_node_t *start, struct graph_node_t *end);
+struct graph_node_t* find_node(struct graph_node_t* start, int value);
 
 void add_node(struct graph_node_t* start, int new_value, int parent_value);
 

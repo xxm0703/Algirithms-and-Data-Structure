@@ -3,10 +3,6 @@
 #include "graph.h"
 #include "queue.h"
 
-struct graph_node_t* init_graph_node(int value);
-
-
-void add_node(struct graph_node_t* start, int new_value, int parent_value);
 
 void print_node(struct graph_node_t* node) {
     printf("value=%d item_count=%d visited=%d items=",
@@ -17,8 +13,6 @@ void print_node(struct graph_node_t* node) {
     }
 }
 
-int bfs(struct graph_node_t *start, struct graph_node_t *end);
-struct graph_node_t* find_node(struct graph_node_t* start, int value);
 
 
 struct graph_node_t* init_graph_node(int value)
@@ -29,6 +23,37 @@ struct graph_node_t* init_graph_node(int value)
     new_node->item_count = 0;
     new_node->visited = 0;
     return new_node;
+}
+
+
+struct graph_node_t *read_from_file(const char *filename){
+    FILE *file = fopen(filename, "r");
+    if(file == NULL){
+        printf("File not found\n");
+        return NULL;
+    }
+
+    struct graph_node_t **nodes = NULL;
+    int *values = NULL;
+    int count = 0, i = 0;
+    int value, index, parent_index;
+
+    fscanf(file, "%d", &count);
+    nodes = (struct graph_node_t **)malloc(count * sizeof(struct graph_node_t *));
+    while(i < count && fscanf(file, "%d", &value) != EOF){
+        printf("%d\n", value);
+        nodes[i] = init_graph_node(value);
+        ++i;
+    }
+
+    printf("-------------\n");
+
+    while(fscanf(file, "%d %d", &index, &parent_index) != EOF){
+        printf("%d %d\n", index, parent_index);
+        connect_nodes(nodes[index], nodes[parent_index], 1);
+    }
+    fclose(file);
+    return nodes[0];
 }
 
 unsigned short dijkstra(struct graph_node_t *s, struct graph_node_t *e) {
