@@ -1,6 +1,9 @@
+#include<string.h>
 #include<stdio.h>
+#include<stdlib.h>
+#include<assert.h>
 
-uint8_t IP_TABLE[64] = {
+u_int8_t IP_TABLE[64] = {
   58, 50, 42, 34, 26, 18, 10, 2,
   60, 52, 44, 36, 28, 20, 12, 4,
   62, 54, 46, 38, 30, 22, 14, 6,
@@ -11,7 +14,7 @@ uint8_t IP_TABLE[64] = {
   63, 55, 47, 39, 31, 23, 15, 7
 };
 
-uint8_t FP_TABLE[64] = {
+u_int8_t FP_TABLE[64] = {
   40, 8, 48,  16,  56, 24,  64, 32,
   39, 7, 47,  15,  55, 23,  63, 31,
   38, 6, 46,  14,  54, 22,  62, 30,
@@ -22,7 +25,7 @@ uint8_t FP_TABLE[64] = {
   33, 1, 41,   9,  49, 17,  57, 25
 };
 
-uint8_t S_BOX_TABLE[8][64] = {
+u_int8_t S_BOX_TABLE[8][64] = {
   {14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7,
   0, 15, 7, 4, 14, 2, 13, 1, 10, 6, 12, 11, 9, 5, 3, 8,
   4, 1, 14, 8, 13, 6, 2, 11, 15, 12, 9, 7, 3, 10, 5, 0,
@@ -64,7 +67,7 @@ uint8_t S_BOX_TABLE[8][64] = {
   }
 };
 
-uint8_t EXPANSION_TABLE[48] = {
+u_int8_t EXPANSION_TABLE[48] = {
   32, 1, 2, 3, 4, 5,
   4, 5, 6, 7, 8, 9,
   8, 9, 10, 11, 12, 13,
@@ -75,7 +78,7 @@ uint8_t EXPANSION_TABLE[48] = {
   28, 29, 30, 31, 32, 1
 };
 
-uint8_t F_FUNC_PERM[32] = {
+u_int8_t F_FUNC_PERM[32] = {
   16,  7, 20, 21,
   29, 12, 28, 17,
    1, 15, 23, 26,
@@ -85,3 +88,29 @@ uint8_t F_FUNC_PERM[32] = {
   19, 13, 30,  6,
   22, 11,  4, 25
 };
+
+void perm(char data[8], u_int8_t *table) {
+    char newArr[8];
+    memset(newArr, 0, 8);
+    for (int i = 0; i < 64; ++i) {
+        unsigned char pos = table[i] - 1;
+        assert(pos < 64);
+        newArr[pos / 8] |= (((data[i / 8] >> (i % 8)) & 1) << (pos % 8));
+    }
+    memcpy(data, newArr, 8);
+}
+
+int main(int argc, char const *argv[])
+{
+    char str[] = "poiuytr";
+    printf("%d\n", *str);
+    printf("%s\n", str);
+    perm(str, IP_TABLE);
+    printf("%d\n", *str);
+    printf("%s\n", str);
+    perm(str, FP_TABLE);
+    printf("%d\n", *str);
+    printf("%s\n", str);
+
+    return 0;
+}
