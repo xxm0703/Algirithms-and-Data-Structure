@@ -1,0 +1,32 @@
+#include<stdio.h>
+#include<stdlib.h>
+
+typedef struct n {
+	char data;
+	struct node_t *next;
+} node_t;
+
+node_t *init(char value) {
+	node_t *newHead = (node_t *)malloc(sizeof(node_t));
+	newHead->data = value;
+	newHead->next = NULL;
+	return newHead;
+}
+
+void push_back(node_t *head, char value) {
+	node_t *newNode = (node_t *)malloc(sizeof(node_t));
+	newNode->data = value;
+	newNode->next = NULL;
+	while(head->next != NULL) head = head->next;
+	head->next = newNode;
+}
+
+
+int main() {
+	node_t *head = NULL;
+	push_back(head, 9);
+	printf("%d", head->data);
+	return 0;
+}
+
+
